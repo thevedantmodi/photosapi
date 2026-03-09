@@ -22,6 +22,14 @@ public class MigrationRunner implements CommandLineRunner {
         this.photoRepository = photoRepository;
     }
 
+    private void setOrWarn(Photo photo, String fieldName, String value, Runnable setter) {
+        if (value != null && !value.isEmpty()) {
+            setter.run();
+        } else {
+            System.out.println("WARN [" + photo.getFriendlyName() + "]: missing " + fieldName);
+        }
+    }
+
     @Override
     public void run(String... args) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
@@ -29,16 +37,26 @@ public class MigrationRunner implements CommandLineRunner {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-        for (JsonNode node : records) {
+        for (JsonNode json_record : records) {
             Photo photo = new Photo();
-            photo.setFriendlyName(node.get("id").asText());
-            photo.setThumbName(node.get("thumb").asText());
-            photo.setLargeName(node.get("large").asText());
-            photo.setOriginalName(node.get("originalName").asText());
-            photo.setLat(node.get("lat").asDouble());
-            photo.setLon(node.get("lng").asDouble());
-            photo.setCaption(node.get("caption").asText());
-            photo.setDate(LocalDateTime.parse(node.get("date").asText(), formatter).toLocalDate());
+            /* set the fields and WARN on empty */
+            setOrWarn(photo, "friendlyName", json_record.get("id").asText(),
+                    () -> photo.setFriendlyName(json_record.get("id").asText()));
+            setOrWarn(photo, "thumbName", json_record.get("thumb").asText(),
+                    () -> photo.setThumbName(json_record.get("thumb").asText()));
+            setOrWarn(photo, "largeName", json_record.get("large").asText(),
+                    () -> photo.setLargeName(json_record.get("large").asText()));
+            setOrWarn(photo, "originalName", json_record.get("originalName").asText(),
+                    () -> photo.setOriginalName(json_record.get("originalName").asText()));
+            setOrWarn(photo, "lat", json_record.get("lat").asText(),
+                    () -> photo.setLat(json_record.get("lat").asDouble()));
+            setOrWarn(photo, "lon", json_record.get("lng").asText(),
+                    () -> photo.setLon(json_record.get("lng").asDouble()));
+            setOrWarn(photo, "caption", json_record.get("caption").asText(),
+                    () -> photo.setCaption(json_record.get("caption").asText()));
+            setOrWarn(photo, "date", json_record.get("date").asText(),
+                    () -> photo
+                            .setDate(LocalDateTime.parse(json_record.get("date").asText(), formatter).toLocalDate()));
 
             photoRepository.save(photo);
         }

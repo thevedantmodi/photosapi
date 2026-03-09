@@ -56,7 +56,7 @@ public class MigrationRunner implements CommandLineRunner {
                     () -> photo.setCaption(json_record.get("caption").asText()));
             setOrWarn(photo, "date", json_record.get("date").asText(),
                     () -> photo
-                            .setDate(LocalDateTime.parse(json_record.get("date").asText(), formatter).toLocalDate()));
+                            .setDate(LocalDateTime.parse(json_record.get("date").asText(), formatter)));
 
             photoRepository.save(photo);
         }

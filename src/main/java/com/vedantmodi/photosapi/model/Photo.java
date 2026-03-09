@@ -1,7 +1,7 @@
 /* definition of "Photo" model that will be represented in the database */
 package com.vedantmodi.photosapi.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,6 +27,6 @@ public class Photo {
     private Double lat;
     private Double lon;
     private String caption;
-    private LocalDate date;
+    private LocalDateTime date;
 
 }

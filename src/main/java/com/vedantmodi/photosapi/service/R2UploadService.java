@@ -6,10 +6,8 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import java.io.InputStream;
-
 @Service
-public class R2Service {
+public class R2UploadService {
 
     private final S3Client s3Client;
 
@@ -19,15 +17,19 @@ public class R2Service {
     @Value("${r2.public-url}")
     private String publicUrl;
 
-    public R2Service(S3Client s3Client) {
+    public R2UploadService(S3Client s3Client) {
         this.s3Client = s3Client;
     }
 
     public String upload(byte[] data, String key, String contentType) {
         s3Client.putObject(
-                PutObjectRequest.builder().bucket(bucket).key(key)
-                        .contentType(contentType).build(),
-                RequestBody.fromBytes(data));
+                PutObjectRequest.builder()
+                        .bucket(bucket)
+                        .key(key)
+                        .contentType(contentType)
+                        .build(),
+                RequestBody.fromBytes(data)
+        );
         return publicUrl + "/" + key;
     }
 }

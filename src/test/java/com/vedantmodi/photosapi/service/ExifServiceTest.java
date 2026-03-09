@@ -49,7 +49,7 @@ public class ExifServiceTest {
     void extractsDateFromImageWithGps() throws Exception {
         File image = new File(getClass().getClassLoader()
                 .getResource("taipei-skyline-03.png").getFile());
-        Optional<LocalDate> dt = exifService.extractDate(image);
+        Optional<LocalDateTime> dt = exifService.extractDate(image);
         assertTrue(!dt.isEmpty());
         System.out.println(String.format("date: %s\n", dt.get().toString()));
     }

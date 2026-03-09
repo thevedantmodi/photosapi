@@ -1,0 +1,24 @@
+[
+    {
+        "id": 929,
+        "friendlyName": "silversands-overhead-01",
+        "thumbName": "/photos/silversands-overhead-01_thumb.jpg",
+        "largeName": "/photos/silversands-overhead-01_large.jpg",
+        "originalName": "silversands-overhead-01.jpg",
+        "lat": 18.48549,
+        "lon": -77.527911,
+        "caption": "Silver Sands Beach gazebo from above",
+        "date": "2022-06-22"
+    },
+    {
+        "id": 937,
+        "friendlyName": "silversands-overhead-02",
+        "thumbName": "/photos/silversands-overhead-02_thumb.jpg",
+        "largeName": "/photos/silversands-overhead-02_large.jpg",
+        "originalName": "silversands-overhead-02.jpg",
+        "lat": 18.48536,
+        "lon": -77.527633,
+        "caption": "Silver Sands Beach from above",
+        "date": "2022-06-22"
+    }
+]

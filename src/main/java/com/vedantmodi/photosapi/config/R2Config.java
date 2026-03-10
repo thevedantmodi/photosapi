@@ -12,10 +12,10 @@ import java.net.URI;
 
 @Configuration
 public class R2Config {
-    @Value("{r2.access-key-id}")
+    @Value("${r2.access-key-id}")
     private String accessKeyId;
 
-    @Value("{r2.secret-access-key}")
+    @Value("${r2.secret-access-key}")
     private String secretAccessKey;
 
     @Value("${r2.endpoint}")
@@ -23,13 +23,11 @@ public class R2Config {
 
     @Bean
     public S3Client s3Client() {
-        return S3Client.builder()
-                .endpointOverride(URI.create(endpoint))
-                .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create(accessKeyId, secretAccessKey)))
-                .region(Region.of("auto"))
-                .forcePathStyle(true)
-                .build();
+        return S3Client.builder().endpointOverride(URI.create(endpoint))
+                .credentialsProvider(
+                        StaticCredentialsProvider.create(AwsBasicCredentials
+                                .create(accessKeyId, secretAccessKey)))
+                .region(Region.of("auto")).forcePathStyle(true).build();
     }
 
 }

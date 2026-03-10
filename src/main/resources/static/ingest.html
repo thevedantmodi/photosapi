@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Photo Ingest</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background: #f5f5f5;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        img#preview {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            margin: 16px 0;
+            display: none;
+            border-radius: 4px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        button {
+            background: #222;
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button:disabled {
+            background: #aaa;
+        }
+
+        #status {
+            margin-top: 16px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        #status.success {
+            color: green;
+        }
+
+        #status.error {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Photo Ingest</h1>
+    <div class="card">
+        <label>Photo</label>
+        <input type="file" id="fileInput" accept="image/*">
+        <img id="preview">
+        <label>Caption</label>
+        <input type="text" id="caption" placeholder="Enter a caption...">
+        <button id="submitBtn" disabled>Upload</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+        const caption = document.getElementById('caption');
+        const submitBtn = document.getElementById('submitBtn');
+        const status = document.getElementById('status');
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+            submitBtn.disabled = false;
+        });
+
+        submitBtn.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            submitBtn.disabled = true;
+            status.className = '';
+            status.textContent = 'Uploading...';
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('caption', caption.value);
+
+            try {
+                const res = await fetch('/ingest', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (res.ok) {
+                    const photo = await res.json();
+                    status.className = 'success';
+                    status.textContent = `✅ Uploaded: ${photo.friendlyName}`;
+                    fileInput.value = '';
+                    caption.value = '';
+                    preview.style.display = 'none';
+                } else {
+                    status.className = 'error';
+                    status.textContent = '🙅‍♀️ Upload failed.';
+                }
+            } catch (err) {
+                status.className = 'error';
+                status.textContent = 'Error: ' + err.message;
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

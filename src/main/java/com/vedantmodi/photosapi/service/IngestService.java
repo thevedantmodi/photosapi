@@ -36,7 +36,7 @@ public class IngestService {
                 file.getOriginalFilename());
         if (tempFile == null)
             return Optional.empty();
-
+ 
         file.transferTo(tempFile);
 
         String originalName = file.getOriginalFilename();
